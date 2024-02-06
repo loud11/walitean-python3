@@ -31,7 +31,7 @@ def parse_all_var_ints(hex_string):
     position = 0
     var_int_tuple = []
     while position < length:
-        var_int_tuple = parse_next_var_int(hex_string[position:])
+        var_int_tuple = parse_next_var_int(hex_string[int(position):])
         if var_int_tuple != None:
             list_of_var_ints.append(var_int_tuple[0])
             position += (var_int_tuple[1] * 2)
@@ -78,23 +78,23 @@ def parse_next_var_int(hex_string):
 
 #-----------------Example-------------------
 if __name__ == "__main__":
-    print "----> Testing parse_next_var_int(hexString)"
-    print "parse_next_var_int(\"1\"):                      ", parse_next_var_int("1")
-    print "parse_next_var_int(\"01\"):                     ", parse_next_var_int("01")
-    print "parse_next_var_int(\"10\"):                     ", parse_next_var_int("10")
-    print "parse_next_var_int(\"5a01\"):                   ", parse_next_var_int("5a01")
-    print "parse_next_var_int(\"0717191901810f\"):         ", parse_next_var_int("0717191901810f")
-    print "parse_next_var_int(\"810f\"):                   ", parse_next_var_int("810f")
-    print "parse_next_var_int(\"9192a4c3f5b6e78899\"):     ", parse_next_var_int("9192a4c3f5b6e78899")
-    print "parse_next_var_int(\"9192a4c3f5b6e78899ab2\"):  ", parse_next_var_int("9192a4c3f5b6e78899ab2")
-
-    print "\n----> Testing parse_all_var_ints(hexString)"
-    print "parse_all_var_ints(\"1\"):                      ", parse_all_var_ints("1")
-    print "parse_all_var_ints(\"01\"):                     ", parse_all_var_ints("01")
-    print "parse_all_var_ints(\"10\"):                     ", parse_all_var_ints("10")
-    print "parse_all_var_ints(\"5a01\"):                   ", parse_all_var_ints("5a01")
-    print "parse_all_var_ints(\"0717191901810f\"):         ", parse_all_var_ints("0717191901810f")
-    print "parse_all_var_ints(\"810f\"):                   ", parse_all_var_ints("810f")
-    print "parse_all_var_ints(\"9192a4c3f5b6e78899\"):     ", parse_all_var_ints("9192a4c3f5b6e78899")
-    print "parse_all_var_ints(\"9192a4c3f5b6e78899ab2\"):  ", parse_all_var_ints("9192a4c3f5b6e78899ab2")
+    print("module test")
+    #print "----> Testing parse_next_var_int(hexString)"
+    #print "parse_next_var_int(\"1\"):                      ", parse_next_var_int("1")
+    #print "parse_next_var_int(\"01\"):                     ", parse_next_var_int("01")
+    #print "parse_next_var_int(\"10\"):                     ", parse_next_var_int("10")
+    #print "parse_next_var_int(\"5a01\"):                   ", parse_next_var_int("5a01")
+    #print "parse_next_var_int(\"0717191901810f\"):         ", parse_next_var_int("0717191901810f")
+    #print "parse_next_var_int(\"810f\"):                   ", parse_next_var_int("810f")
+    #print "parse_next_var_int(\"9192a4c3f5b6e78899\"):     ", parse_next_var_int("9192a4c3f5b6e78899")
+    #print "parse_next_var_int(\"9192a4c3f5b6e78899ab2\"):  ", parse_next_var_int("9192a4c3f5b6e78899ab2")
+    #print "\n----> Testing parse_all_var_ints(hexString)"
+    #print "parse_all_var_ints(\"1\"):                      ", parse_all_var_ints("1")
+    #print "parse_all_var_ints(\"01\"):                     ", parse_all_var_ints("01")
+    #print "parse_all_var_ints(\"10\"):                     ", parse_all_var_ints("10")
+    #print "parse_all_var_ints(\"5a01\"):                   ", parse_all_var_ints("5a01")
+    #print "parse_all_var_ints(\"0717191901810f\"):         ", parse_all_var_ints("0717191901810f")
+    #print "parse_all_var_ints(\"810f\"):                   ", parse_all_var_ints("810f")
+    #print "parse_all_var_ints(\"9192a4c3f5b6e78899\"):     ", parse_all_var_ints("9192a4c3f5b6e78899")
+    #print "parse_all_var_ints(\"9192a4c3f5b6e78899ab2\"):  ", parse_all_var_ints("9192a4c3f5b6e78899ab2")
 #-----------------Example-------------------

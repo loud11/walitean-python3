@@ -94,7 +94,7 @@ class SQLITE():
 
 
 def main():
-    print 'test'
+    print('test')
 
 
 
