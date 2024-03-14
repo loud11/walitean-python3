@@ -71,10 +71,10 @@ def hexdump(buf):
                 output += "."
 
         offset += 16
-        print output
+        print(output)
 
     if (offset == 0):
-        print "%08X:  " % (offset)
+        print("%08X:  " % (offset))
 
 
 class SQLITE_PAGE():
@@ -117,27 +117,27 @@ class SQLITE_PAGE():
         bytes_of_payload = bytes_of_payload_tuple[0]
 
         # Get row_id
-        row_id_string = cell[((bytes_of_payload_tuple[1] * 2)):((bytes_of_payload_tuple[1] + 9) * 2)]
+        row_id_string = cell[int((bytes_of_payload_tuple[1] * 2)):int((bytes_of_payload_tuple[1] + 9) * 2)]
         row_id_tuple = _sqliteVarInt.parse_next_var_int(row_id_string)
         row_id = row_id_tuple[0]
 
         header.append(bytes_of_payload)
         header.append(row_id)
         #print 'offset: %x'%(bytes_of_payload_tuple[1] + row_id_tuple[1])
-        header.append(struct.unpack('=H', cellbytes[(bytes_of_payload_tuple[1] + row_id_tuple[1]):(
+        header.append(struct.unpack('=H', cellbytes[int(bytes_of_payload_tuple[1] + row_id_tuple[1]):int(
             bytes_of_payload_tuple[1] + row_id_tuple[1] + SIZEOFSHORT)])[0])
 
         return header, (bytes_of_payload_tuple[1] + row_id_tuple[1] + SIZEOFSHORT)
 
     # private
     def getData(self, celldata, type, size, offset):
-        data = celldata[offset:offset + size]
+        data = celldata[int(offset):int(offset + size)]
 
         if type == 'INT':
             if size == 6:
-                return struct.unpack('=q', data+'\x00\x00')[0]  # signed int (6 or 8 bytes)
+                return struct.unpack('=q', data+b'\x00\x00')[0]  # signed int (6 or 8 bytes)
             elif size == 7:
-                return struct.unpack('=q', data+'\x00')[0]
+                return struct.unpack('=q', data+b'\x00')[0]
             elif size == 8:
                 return struct.unpack('=q', data)[0]
             elif size == 1:
@@ -145,7 +145,7 @@ class SQLITE_PAGE():
             elif size == 2:
                 return struct.unpack('=h', data)[0]  # signed int (2 bytes)
             elif size == 3:
-                struct.unpack('=i', data+'\x00')[0]  # signed int (3 bytes)
+                struct.unpack('=i', data+b'\x00')[0]  # signed int (3 bytes)
             elif size == 4:
                 return struct.unpack('=i', data)[0]  # signed int (4 bytes)
 
@@ -161,8 +161,8 @@ class SQLITE_PAGE():
         #hexdump(cell)
 
         header, size = self.cell_header(cell)
-        celltype = cell[size:size + header[2] - 2]
-        celldata = cell[size + header[2] - 2:size + header[0]]
+        celltype = cell[int(size):int(size + header[2] - 2)]
+        celldata = cell[int(size + header[2] - 2):int(size + header[0])]
         #hexdump(celldata)
 
         #print 'size: %x, %x'%(size, size+header[2]-2)

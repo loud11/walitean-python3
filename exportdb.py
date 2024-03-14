@@ -39,7 +39,7 @@ class ExportSQLite:
 
     def insertRecord(self, tablename, record):
         sql = 'INSERT INTO %s VALUES' % tablename
-        for i in xrange(len(record)):
+        for i in range(len(record)):
             if i == 0:
                 sql += '('
             sql += ' ?'
