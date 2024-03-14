@@ -53,7 +53,7 @@ class SQLITE():
     def getschemata(self):
         CREATETABLE = 'CREATE TABLE'
         columnsdic = {}
-        for offset in xrange(len(self.buf)):
+        for offset in range(len(self.buf)):
             tablename = ''
             if CREATETABLE == self.buf[offset:offset+len(CREATETABLE)]:
                 columnlst = []
