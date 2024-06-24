@@ -24,6 +24,7 @@ from operator import eq
 from collections import defaultdict
 from ctypes import *
 
+
 class _WALFileHeader(BigEndianStructure):
     _fields_ = [
         ('Signature', c_uint32),
@@ -36,6 +37,7 @@ class _WALFileHeader(BigEndianStructure):
         ('Checksum2', c_uint32)
     ]
 
+
 class _WALFrameHeader(BigEndianStructure):
     _fields_ = [
         ('DBPageNumber', c_uint32),
@@ -46,8 +48,10 @@ class _WALFrameHeader(BigEndianStructure):
         ('Checksum2', c_uint32)
     ]
 
+
 def _memcpy(buf, fmt):
     return cast(c_char_p(buf), POINTER(fmt)).contents
+
 
 class WAL_SQLITE():
     def __init__(self):
@@ -55,7 +59,6 @@ class WAL_SQLITE():
         self.fbuf = ''
         self.pagesize = 0
         self.count = 0
-
 
     def open(self, filepath):
         try:
@@ -85,9 +88,10 @@ class WAL_SQLITE():
         count = 1
         for offset in range(0, len(frame_buf), self.pagesize + sizeof(_WALFrameHeader)):
             frame_element = []
-            frameheader = _memcpy(frame_buf[offset:offset+sizeof(_WALFrameHeader)], _WALFrameHeader)
-            frame_element.append(frameheader) #frame header
-            frame_element.append(frame_buf[offset+sizeof(_WALFrameHeader):offset+sizeof(_WALFrameHeader)+self.pagesize]) # page
+            frameheader = _memcpy(frame_buf[offset:offset + sizeof(_WALFrameHeader)], _WALFrameHeader)
+            frame_element.append(frameheader)  # frame header
+            frame_element.append(
+                frame_buf[offset + sizeof(_WALFrameHeader):offset + sizeof(_WALFrameHeader) + self.pagesize])  # page
             frame_list.append(frame_element)
 
             count += 1
@@ -97,7 +101,7 @@ class WAL_SQLITE():
     def getscheme(self, rootpage):
         db = sqliteDB.SQLITE(rootpage)
         scheme = db.getschemata()
-        #print scheme
+        # print scheme
         return scheme
 
     def process(self, framelist):
@@ -109,11 +113,11 @@ class WAL_SQLITE():
         # searching cell list on each page
         for frame in framelist:
             sqlite_page = sqlitePage.SQLITE_PAGE(frame[1])
-            if sqlite_page.isleaf() == 1:   # If it is leaf page
-                celllst = sqlite_page.getcelloffset()   # Getting a list of cell offset
+            if sqlite_page.isleaf() == 1:  # If it is leaf page
+                celllst = sqlite_page.getcelloffset()  # Getting a list of cell offset
 
                 for celloffset in celllst:
-                    #print 'cell'
+                    # print 'cell'
                     cellbuf = frame[1][celloffset:]
                     dataset = sqlite_page.getCellData(cellbuf)  # Getting a Cell Data(column type, data)
 
@@ -184,14 +188,14 @@ class WAL_SQLITE():
         export.close()
 
     def findvalidcolumninfo(self, schema, wallist):
-        #print '[+] Find DB table schema'
+        # print '[+] Find DB table schema'
         newdbinfo = {}
         for waltbname, walrecords in wallist.items():
             recordslist = []
             findit = False
 
-            #columnname = columninfo[0]
-            #columntype = columninfo[1]
+            # columnname = columninfo[0]
+            # columntype = columninfo[1]
 
             for tbname, columninfo in schema.items():
                 columncount = len(columninfo)
@@ -228,19 +232,16 @@ class WAL_SQLITE():
                     dummy.append('unknown%d' % columnoffset)
                     dummy.append(decColumn[columnoffset])
                     newcolumninfo.append(dummy)
-                print(' [-] Could not find table schema %s'%waltbname)
+                print(' [-] Could not find table schema %s' % waltbname)
                 newdbinfo[waltbname] = [newcolumninfo, walrecords, False]
 
-        return newdbinfo    # key is tablename, value is list(columninfo, records)
-
-
-
+        return newdbinfo  # key is tablename, value is list(columninfo, records)
 
 
 def comp(dbtbl, waltbl):
     tblcolumnlen = len(dbtbl)
     result = set(dbtbl) & set(waltbl)
-    return ((len(result)/tblcolumnlen) * 100)
+    return ((len(result) / tblcolumnlen) * 100)
 
 
 def EncodeColumn(dataset):
@@ -278,7 +279,7 @@ def main():
     parser.add_argument('-f', '--file', nargs=1, help='WAL file(*-wal)', required=True)
     parser.add_argument('-x', '--exportfile', nargs=1, help='SQlite filename', required=True)
     parser.add_argument('-m', '--maindb', nargs=1, help='Main DB File (Optional)', required=False)
-    
+
     args = parser.parse_args()
 
     inputfile = args.file[0]
@@ -287,7 +288,7 @@ def main():
         print('[!] File is not exists')
         parser.print_help()
         exit()
-    
+
     wal_class = WAL_SQLITE()
     wal_class.open(inputfile)
     frame_list = wal_class.get_frame_list()
@@ -307,9 +308,9 @@ def main():
         DBSchema = wal_class.getscheme(buf)
 
         if len(DBSchema):
-            print(' [-] Find DB Schema at %s'%args.maindb[0])
+            print(' [-] Find DB Schema at %s' % args.maindb[0])
         else:
-            print(' [-] Could not find DB Schema at %s'%args.maindb[0])
+            print(' [-] Could not find DB Schema at %s' % args.maindb[0])
 
     print('[*] Processing..')
     d = wal_class.process(frame_list)
@@ -320,6 +321,7 @@ def main():
     print('[*] Output Type : SQLite DB')
     print('[*] File Name : %s' % args.exportfile[0])
     wal_class.exportSqliteDB(args.exportfile[0], newdbinfo)
+
 
 if __name__ == "__main__":
     main()
